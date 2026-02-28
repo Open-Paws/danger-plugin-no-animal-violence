@@ -1,4 +1,4 @@
-# danger-plugin-speciesism
+# danger-plugin-no-animal-violence
 
 A [Danger.js](https://danger.systems/js/) plugin that flags speciesist language in PR diffs and suggests inclusive alternatives.
 
@@ -11,23 +11,23 @@ See: [Speciesist language and nonhuman animal ethics](https://doi.org/10.1007/s4
 ## Install
 
 ```bash
-npm install --save-dev danger-plugin-speciesism
+npm install --save-dev danger-plugin-no-animal-violence
 # or
-yarn add --dev danger-plugin-speciesism
+yarn add --dev danger-plugin-no-animal-violence
 ```
 
 ## Usage
 
 ```typescript
 // dangerfile.ts
-import speciesism from "danger-plugin-speciesism";
-speciesism();
+import noAnimalViolence from "danger-plugin-no-animal-violence";
+noAnimalViolence();
 ```
 
 ### Options
 
 ```typescript
-speciesism({
+noAnimalViolence({
   severity: "message", // default: "warn"
 });
 ```
