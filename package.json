@@ -1,0 +1,25 @@
+{
+  "name": "danger-plugin-no-animal-violence",
+  "version": "0.1.0",
+  "description": "Danger.js plugin for detecting animal violence language in PR diffs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": ["danger", "danger-plugin", "inclusive-language", "speciesism", "animal-violence"],
+  "author": "Open Paws <hello@openpaws.ai>",
+  "license": "MIT",
+  "peerDependencies": {
+    "danger": ">=10.0.0"
+  },
+  "devDependencies": {
+    "danger": "^12.0.0",
+    "typescript": "^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Open-Paws/danger-plugin-no-animal-violence"
+  },
+  "homepage": "https://github.com/Open-Paws/danger-plugin-no-animal-violence"
+}
