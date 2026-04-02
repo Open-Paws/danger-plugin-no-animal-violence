@@ -50,7 +50,65 @@ npx tsc --noEmit
 # No test suite yet — test by integrating into a Dangerfile locally
 ```
 
+## Organizational Context
+
+**Strategic role (Lever 1 + Lever 3):** Danger.js plugin for PR review workflow — scans only added lines in PR diffs, zero noise from pre-existing code. For teams that already use Danger.js, this is the lowest-barrier integration. For teams without Danger.js, `no-animal-violence-action` or `reviewdog-no-animal-violence` are better options.
+
+**Note:** Pattern dictionary is auto-generated from `project-compassionate-code`. Do not manually edit the pattern array in `src/index.ts`. Pattern changes go through the generation pipeline.
+
+**Current org priorities relevant to this repo:**
+- Suite maintenance has **no named owner** as of 2026-04-02. Pattern updates come through the auto-generation pipeline from `project-compassionate-code` — verify it is still active.
+- No test suite currently. Adding tests is a concrete F-rank quest.
+
+**Decisions affecting this repo:**
+- 2026-04-01: Pattern dictionary syncs from `project-compassionate-code` — do not manually edit patterns.
+- 2026-03-25: TypeScript discipline: run `npx tsc --noEmit` before pushing any changes.
+
 ## Related Repos
 
+- [no-animal-violence](https://github.com/Open-Paws/no-animal-violence) — Canonical rule dictionary
 - [semgrep-rules-no-animal-violence](https://github.com/Open-Paws/semgrep-rules-no-animal-violence) — Semgrep CI rules
 - [vscode-no-animal-violence](https://github.com/Open-Paws/vscode-no-animal-violence) — VS Code extension
+- [no-animal-violence-action](https://github.com/Open-Paws/no-animal-violence-action) — GitHub Action (lower barrier for teams without Danger.js)
+- [reviewdog-no-animal-violence](https://github.com/Open-Paws/reviewdog-no-animal-violence) — reviewdog-based alternative
+
+## Development Standards
+
+### 10-Point Review Checklist (ranked by AI violation frequency)
+
+1. **DRY** — Pattern dictionary is auto-generated. Do not manually duplicate patterns. New patterns go through the generation pipeline.
+2. **Deep modules** — Three steps: pattern matching, diff scanning, reporting. Keep them as distinct logical units.
+3. **Single responsibility** — Pattern matching, diff scanning, and reporter calls are separate responsibilities.
+4. **Error handling** — If `danger.git.diffForFile()` returns null for a file, handle gracefully — don't throw. Unexpected file types are not an error.
+5. **Information hiding** — The options interface (`{ severity }`) is the public API. Internal pattern iteration is an implementation detail.
+6. **Ubiquitous language** — "farmed animal" not "livestock," "factory farm" not "farm." Never introduce synonyms for domain terms.
+7. **Design for change** — Pattern dictionary updates must require only updating the generated array. Structural code changes for new patterns are a design failure.
+8. **Legacy velocity** — Before modifying diff scanning logic, verify against a Dangerfile in a test repo.
+9. **Over-patterning** — Single-module plugin is the right architecture. Resist adding complexity.
+10. **Test quality** — No test suite currently. Priority: add tests for diff scanning logic and pattern matching.
+
+### Quality Gates
+
+- **TypeScript**: `npx tsc --noEmit` before pushing any TypeScript changes.
+- **Build**: `npm run build` — verify `dist/` is generated correctly.
+- **Desloppify**: `desloppify scan --path .` — minimum score ≥85.
+- **Two-failure rule**: After two failed fixes on the same problem, stop and restart.
+
+### Testing Methodology
+
+- No test suite yet — known gap. Spec-first when adding tests.
+- Three questions per pattern: (1) Does it flag the phrase in an added line? (2) Does it ignore removed lines? (3) Does it suggest the correct alternative?
+
+### Seven Concerns — Repo-Specific Notes
+
+1. **Testing** — No test suite. Highest-priority improvement.
+2. **Security** — Runs in CI with access to PR diff content. No data should be logged or retained beyond the Danger run.
+3. **Privacy** — Scans PR diff content. No retention.
+4. **Cost optimization** — Runs alongside Danger. No API calls, no compute beyond pattern matching.
+5. **Advocacy domain** — Pattern alternatives must use movement-standard language consistently.
+6. **Accessibility** — Warning messages must be clear and actionable to developers who may not know the advocacy context.
+7. **Emotional safety** — Messages explain the alternative without requiring engagement with graphic content.
+
+### Structured Coding Reference
+
+For tool-specific AI coding instructions (Claude Code rules, Cursor MDC, Copilot, Windsurf, etc.), copy the corresponding directory from `structured-coding-with-ai` into this project root.
