@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "node --test tests/index.test.js"
   },
   "keywords": ["danger", "danger-plugin", "inclusive-language", "speciesism", "animal-violence"],
   "author": "Open Paws <hello@openpaws.ai>",
