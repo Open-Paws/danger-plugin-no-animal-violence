@@ -13,6 +13,7 @@ related_repos: no-animal-violence, semgrep-rules-no-animal-violence, eslint-plug
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)](https://www.typescriptlang.org/)
 [![Danger.js](https://img.shields.io/badge/Danger.js-%3E%3D10.0.0-red)](https://danger.systems/js/)
 [![Open Paws](https://img.shields.io/badge/Open%20Paws-nonprofit-green)](https://openpaws.ai)
+[![desloppify score](https://img.shields.io/badge/desloppify-93.1%2F100-brightgreen)](scorecard.png)
 
 A [Danger.js](https://danger.systems/js/) plugin that scans PR diffs for speciesist language and suggests inclusive alternatives. It checks only added lines, so existing code is never flagged. Pattern dictionary covers 65+ phrases across idioms, tech-specific terms, and industry euphemisms for animal exploitation, auto-generated from the canonical [no-animal-violence](https://github.com/Open-Paws/no-animal-violence) rule set.
 
@@ -179,6 +180,12 @@ tests/
 </details>
 
 ---
+
+## Code Quality
+
+<img src="scorecard.png" width="100%">
+
+_Scorecard is a point-in-time snapshot (captured 2026-04-18). The live quality gate runs on every PR via the [Desloppify Quality Gate workflow](.github/workflows/desloppify.yml); the badge above will drift until regenerated. To refresh locally: `desloppify scan --path .` and replace `scorecard.png`._
 
 ## Contributing
 
