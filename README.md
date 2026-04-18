@@ -185,6 +185,8 @@ tests/
 
 <img src="scorecard.png" width="100%">
 
+_Scorecard is a point-in-time snapshot (captured 2026-04-18). The live quality gate runs on every PR via the [Desloppify Quality Gate workflow](.github/workflows/desloppify.yml); the badge above will drift until regenerated. To refresh locally: `desloppify scan --path .` and replace `scorecard.png`._
+
 ## Contributing
 
 PRs are welcome for plugin behaviour: severity options, output format, diff scanning logic, test coverage. Pattern changes go through the canonical [no-animal-violence](https://github.com/Open-Paws/no-animal-violence) repo — do not edit the pattern array in `src/index.ts` directly.
