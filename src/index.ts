@@ -89,6 +89,7 @@ const PATTERNS: Pattern[] = [
   { regex: new RegExp("(white|black)list", "gi"), phrase: "whitelist/blacklist", alternatives: ["allowlist/denylist","permit list/block list","inclusion list/exclusion list"] },
   { regex: new RegExp("grandfather(ed|ing)?", "gi"), phrase: "grandfathered", alternatives: ["legacy","exempt","pre-existing"] },
   { regex: new RegExp("veal", "gi"), phrase: "veal", alternatives: ["calf flesh","flesh from calves"] },
+  { regex: new RegExp("lame[\\s-]duck", "gi"), phrase: "lame duck", alternatives: ["outgoing","transitional","ineffective"] },
 ];
 
 export default async function noAnimalViolence(options: NoAnimalViolenceOptions = {}) {
