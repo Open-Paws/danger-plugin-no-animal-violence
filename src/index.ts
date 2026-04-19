@@ -107,8 +107,7 @@ export default async function noAnimalViolence(options: NoAnimalViolenceOptions 
       if (pattern.regex.test(added)) {
         report(
           `**${file}**: Found "${pattern.phrase}". ` +
-          `Consider: ${pattern.alternatives.map(a => `"${a}"`).join(" or ")}. ` +
-          `[Why?](https://doi.org/10.1007/s43681-023-00380-w)`
+          `Consider: ${pattern.alternatives.map(a => `"${a}"`).join(" or ")}.`
         );
         pattern.regex.lastIndex = 0;
       }
