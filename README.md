@@ -72,7 +72,7 @@ dangerfile.ts — Danger.js PR comment example
    or "pointless pursuit" or "fool's errand".
 ```
 
-The comment includes: the file where the phrase appears, the exact phrase matched, and two or three concrete alternatives.
+The comment includes: the file where the phrase appears, the exact phrase matched, and multiple concrete alternatives.
 
 ---
 
