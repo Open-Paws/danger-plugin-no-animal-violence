@@ -57,7 +57,7 @@ Add a CI step that runs `npx danger ci`. Danger posts PR comments automatically 
 
 **5. Verify**
 
-Open a test PR with a phrase like `wild goose chase` in a new line. Danger posts a warning with the phrase, suggested alternatives, and a link to the research.
+Open a test PR with a phrase like `wild goose chase` in a new line. Danger posts a warning with the phrase and suggested alternatives.
 
 ---
 
@@ -70,10 +70,9 @@ dangerfile.ts — Danger.js PR comment example
 ─────────────────────────────────────────────────────────────────────────────
 ⚠  src/utils/retry.ts: Found "wild goose chase". Consider: "futile search"
    or "pointless pursuit" or "fool's errand".
-   [Why?](https://doi.org/10.1007/s43681-023-00380-w)
 ```
 
-The comment includes: the file where the phrase appears, the exact phrase matched, two or three concrete alternatives, and a link to the research on speciesist language.
+The comment includes: the file where the phrase appears, the exact phrase matched, and multiple concrete alternatives.
 
 ---
 
@@ -114,7 +113,6 @@ The plugin scans only `+` lines (added content) across modified and created file
 - [Danger.js documentation](https://danger.systems/js/)
 - [Canonical no-animal-violence rules](https://github.com/Open-Paws/no-animal-violence) — the source of truth for all patterns
 - [no-animal-violence-action](https://github.com/Open-Paws/no-animal-violence-action) — GitHub Action alternative for teams not using Danger.js
-- [Research: Speciesist language and nonhuman animal ethics](https://doi.org/10.1007/s43681-023-00380-w)
 
 **Full no-animal-violence tooling suite**
 
@@ -156,7 +154,7 @@ Test each of 65+ regex patterns against added text
        │
        ▼
 Match found → call warn() or message() with file,
-              phrase, alternatives, and research link
+              phrase, and alternatives
 ```
 
 **Pattern source**
@@ -220,7 +218,7 @@ Open Paws is a 501(c)(3) nonprofit building AI infrastructure for the animal lib
 
 **Acknowledgments**
 
-Pattern dictionary generated from [project-compassionate-code](https://github.com/Open-Paws/project-compassionate-code). Research foundation: [Speciesist language and nonhuman animal ethics](https://doi.org/10.1007/s43681-023-00380-w), AI & Society (2023).
+Pattern dictionary generated from [project-compassionate-code](https://github.com/Open-Paws/project-compassionate-code).
 
 ---
 
