@@ -1,0 +1,163 @@
+version: "1"
+interaction: hook
+# Danger.js plugin that scans PR diffs for speciesist language and posts inline warnings or messages.
+
+personas:
+  - id: clean-pr
+    name: PR with no speciesist language
+    description: >
+      A contributor opens a PR whose diff contains only new lines of clean,
+      non-speciesist code. Danger runs, the plugin finds no pattern matches,
+      and posts nothing — the PR comment thread stays silent.
+    environment:
+      runtime: node@18+
+      os: any
+    flows:
+      - id: clean-diff-flow
+        name: Danger run against a clean diff
+        steps:
+          - run: >
+              CI triggers `npx danger ci`. Danger reads the PR diff.
+              The plugin iterates modified and created files, calls
+              `danger.git.diffForFile()` for each, and scans only `+` (added)
+              lines. None of the 65+ regex patterns match. No Danger reporter
+              function is called.
+        expected_outcome: >
+          Danger exits cleanly. No warn(), message(), or fail() call is made.
+          The PR receives no Danger comment. CI passes.
+    assertions:
+      succeeds:
+        - PR diff contains only clean lines and produces zero Danger messages
+        - Plugin completes without throwing when diffForFile returns a non-null result
+      fails_gracefully:
+        - diffForFile returning null for a file does not throw; plugin skips that file silently
+      output_contains: []
+
+  - id: speciesist-variable-names
+    name: PR adding a file with speciesist variable names
+    description: >
+      A contributor opens a PR that adds a new source file containing variable
+      names or comments that match one or more of the 65+ speciesist patterns
+      (e.g., `cattle` used to mean ephemeral servers, `masterSlaveConfig`,
+      `wildGooseChase`, or `dogfoodingEnabled`). Danger runs in warn mode
+      (default) and posts a warning for each matched phrase, citing the file
+      name, the exact phrase, and concrete alternatives.
+    environment:
+      runtime: node@18+
+      os: any
+    flows:
+      - id: speciesist-vars-flow
+        name: Danger run against diff with speciesist identifiers
+        steps:
+          - run: >
+              CI triggers `npx danger ci`. Dangerfile imports the plugin with
+              default options: `noAnimalViolence()`. Danger reads the diff for
+              the new file (e.g., `src/infra/server-pool.ts`). Added lines
+              include text like `const cattleNodes = []` and
+              `// dogfooding this feature internally`. The plugin matches
+              "cattle" (alternatives: "ephemeral", "stateless", "replaceable")
+              and "dogfooding" (alternatives: "internal testing", "eating our
+              own cooking"). warn() is called once per matched phrase.
+        expected_outcome: >
+          Danger posts at least two warning comments on the PR, each in the
+          format: `src/infra/server-pool.ts: Found "cattle". Consider:
+          "ephemeral" or "stateless" or "replaceable".`
+          CI still passes (warn does not block merge by default).
+    assertions:
+      succeeds:
+        - Each matched phrase produces exactly one warn() call
+        - Warning message includes the file path, matched phrase, and at least one alternative
+        - Only added lines are scanned; unchanged context lines are not flagged
+      fails_gracefully:
+        - A file whose diffForFile resolves to null is skipped without error
+        - Multiple matches in the same file each emit their own separate warning
+      output_contains:
+        - 'Found "cattle"'
+        - 'Found "dogfooding"'
+        - "Consider:"
+
+  - id: removing-speciesist-language
+    name: PR removing speciesist language
+    description: >
+      A contributor opens a PR that deletes lines containing speciesist phrases
+      and replaces them with inclusive alternatives (e.g., removing
+      `// wild goose chase` and adding `// futile search`). The plugin scans
+      only added lines, so the removed speciesist phrase is never flagged and
+      the new clean line passes silently. Danger reports no issues.
+    environment:
+      runtime: node@18+
+      os: any
+    flows:
+      - id: cleanup-pr-flow
+        name: Danger run against a cleanup diff
+        steps:
+          - run: >
+              CI triggers `npx danger ci`. Dangerfile uses default
+              `noAnimalViolence()`. The diff for `src/utils/retry.ts` shows a
+              `-` line with `// wild goose chase` and a `+` line with
+              `// futile search`. The plugin receives only the `added` string
+              (`futile search`) from `diffForFile()`. No pattern matches the
+              replacement text.
+        expected_outcome: >
+          Danger posts no warning or message. The PR is recognised as a
+          positive cleanup. CI passes silently, confirming the replacement
+          phrase is clean.
+    assertions:
+      succeeds:
+        - Removed speciesist phrase on a `-` line is never evaluated by the plugin
+        - Replacement inclusive phrase on the `+` line produces zero warnings
+        - PR receives no Danger comment
+      fails_gracefully:
+        - Plugin does not double-report if the same phrase appears on both a removed and an added line in different files
+      output_contains: []
+
+  - id: fail-mode-ci-block
+    name: Repo configured to fail on violations
+    description: >
+      A team has wrapped the plugin in their Dangerfile to promote violations
+      from warn to fail, so that any speciesist phrase in new code blocks the
+      merge. A contributor opens a PR that adds a comment containing
+      `// spent hen metric` in a data pipeline file. Danger runs, the plugin
+      detects the match, and the custom wrapper calls fail() instead of warn().
+      CI marks the check as failed and the PR cannot be merged until the phrase
+      is removed.
+    environment:
+      runtime: node@18+
+      os: any
+    flows:
+      - id: fail-mode-flow
+        name: Danger run in fail mode against a violating diff
+        steps:
+          - run: >
+              The repo's `dangerfile.ts` wraps the plugin to escalate severity.
+              Example configuration:
+
+                import noAnimalViolence from "danger-plugin-no-animal-violence";
+                noAnimalViolence({ severity: "warn" });
+                // custom wrapper: re-read warnings and call fail() for each
+                // OR use a Dangerfile-level fail() call after noAnimalViolence()
+
+              Alternatively the team uses a Dangerfile that calls fail()
+              directly when the plugin emits any output. CI triggers
+              `npx danger ci`. The diff for `src/pipeline/metrics.ts` includes
+              `+  // spent hen metric`. The plugin matches "spent hen"
+              (alternatives: "end-of-lay hen", "exhausted layer hen") and
+              calls warn(). The wrapper promotes this to a CI failure.
+        expected_outcome: >
+          Danger posts a blocking failure comment on the PR:
+          `src/pipeline/metrics.ts: Found "spent hen". Consider: "end-of-lay
+          hen" or "exhausted layer hen".`
+          The CI check fails. The PR is blocked from merging until the phrase
+          is replaced with an inclusive alternative.
+    assertions:
+      succeeds:
+        - Plugin emits output (warn or message) for each matched phrase regardless of severity setting
+        - Severity "warn" produces warn() calls; severity "message" produces message() calls
+        - Custom Dangerfile wrapper can escalate warn() output to a CI-blocking failure
+      fails_gracefully:
+        - Plugin itself never calls fail(); escalation is the consuming Dangerfile's responsibility
+        - If no patterns match, the wrapper does not trigger a spurious failure
+      output_contains:
+        - 'Found "spent hen"'
+        - "Consider:"
+        - "end-of-lay hen"
