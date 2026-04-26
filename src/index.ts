@@ -175,6 +175,10 @@ const PATTERNS: Pattern[] = [
   { regex: new RegExp("(humans?\\s+and\\s+animals|animals\\s+and\\s+(humans?|people)|people\\s+and\\s+animals|man\\s+and\\s+beast)", "gi"), phrase: "humans and animals", alternatives: ["humans and non-human animals","humans and other animals","people and other animals"], reason: "False dichotomy — humans ARE animals. The phrasing reproduces the speciesist framing animal-liberation writing opposes. 'Humans and other animals' preserves the meaning accurately." },
   { regex: new RegExp("(pet|dog|cat|rabbit|bird)\\s+owners?", "gi"), phrase: "pet owner", alternatives: ["pet guardian","dog guardian","cat guardian","human companion"], reason: "Property framing — 'owner' treats sentient beings as possessions. 'Guardian' preserves the legal and caregiving relationship without the property connotation. Used in legal reform jurisdictions (e.g. Boulder CO, West Hollywood) since the early 2000s." },
   { regex: new RegExp("own(s|ing|ed)?\\s+a\\s+(pet|dog|cat|rabbit|bird)", "gi"), phrase: "own a pet", alternatives: ["live with a companion animal","share a home with","care for a"], reason: "Property framing applied to companion animals. 'Live with a dog' or 'share a home with a cat' captures the relationship without the ownership frame." },
+  { regex: new RegExp("(fish|shrimp|salmon|tilapia)\\s+harvest(ing)?", "gi"), phrase: "fish harvest", alternatives: ["fish slaughter","shrimp slaughter","salmon slaughter"], reason: "Aquaculture euphemism for killing/slaughtering farmed fish/shrimp. 'Harvest' obscures the mass killing at the end of the grow-out phase." },
+  { regex: new RegExp("stocking\\s+density(ies)?", "gi"), phrase: "stocking density", alternatives: ["crowding density","confinement density"], reason: "Industry term for extreme overcrowding in aquaculture tanks/ponds/net pens, where fish are packed at densities causing stress, disease, and cannibalism." },
+  { regex: new RegExp("(harvest|market)\\s+size|slaughter\\s+weight", "gi"), phrase: "harvest size", alternatives: ["slaughter size","killing weight"], reason: "Euphemism for the size/weight at which farmed fish/shrimp are killed ('harvested')." },
+  { regex: new RegExp("grow-out\\s+(pond|tank|phase)", "gi"), phrase: "grow-out pond", alternatives: ["fattening pond","fattening tank"], reason: "Final fattening phase before slaughter in aquaculture." },
 ];
 
 export default async function noAnimalViolence(options: NoAnimalViolenceOptions = {}) {
@@ -193,7 +197,7 @@ export default async function noAnimalViolence(options: NoAnimalViolenceOptions 
         report(
           `**${file}**: Found "${pattern.phrase}". ${pattern.reason} ` +
           `Consider: ${pattern.alternatives.map(a => `"${a}"`).join(" or ")}. ` +
-          `[Why?](https://doi.org/10.1007/s43681-023-00380-w)`
+          `See https://github.com/Open-Paws/no-animal-violence for details.`
         );
         pattern.regex.lastIndex = 0;
       }
